@@ -38,43 +38,45 @@ function doPost(e){
 function parseResponseTo2DArray(responseObject) {  
   var amountOfresponses = responseObject['response'].length;
   var response = responseObject['response'];
-  var result = new Array(amountOfresponses);
+  var result = new Array();
  
   for (var counter = 0; counter < amountOfresponses; counter = counter + 1) {
+    
+    // проверяем есть ли в stats сколько-нибудь данных. Бывает ни сколько.
+    if (response[counter].stats.length < 1)
+      continue;
     // здесь определяем сколько будет параметров в массиве и их значения по умолчанию
-    result[counter] = ["", "", "", 0, 0, "", "", "", 0, "", "", ""]; 
+    var temp = new Array("", "", "", 0, 0, "", "", "", 0, "", "", ""); 
 
     // добавляем дату
-    result[counter][0] = Utilities.formatDate(new Date(), "GMT+3", "dd.MM.yyyy");
+    temp[0] = Utilities.formatDate(new Date(), "GMT+3", "dd.MM.yyyy");
     // добавляем название
-    result[counter][1] = "";
+    temp[1] = "";
 
-    // проверяем есть ли в stats сколько-нибудь данных. Бывает ни сколько.
-    if (response[counter].stats.length > 0) {
-      var stats = response[counter].stats[0];
-      
-      // добавляем потрачено    
-      result[counter][2] = getValueOfTheObject(stats, "spent", "");
-      // добавялем показы
-      result[counter][3] = getValueOfTheObject(stats, "impressions", 0);
-      // добавляем клики
-      result[counter][4] = getValueOfTheObject(stats, "clicks", 0);
-      // добавляем ctr
-      result[counter][5] = getValueOfTheObject(stats, "ctr", "");
-      // добавляем ecpc
-      result[counter][6] = getValueOfTheObject(stats, "ecpc", "");
-      // добавляем ecpm
-      result[counter][7] = getValueOfTheObject(stats, "ecpm", "");
-      // добавляем ID объявления
-      result[counter][8] = getValueOfTheObject(response[counter], "id", 0);
-    }
+    var stats = response[counter].stats[0];
+    
+    // добавляем потрачено    
+    temp[2] = setValueOfTheObject(stats, "spent", "");
+    // добавялем показы
+    temp[3] = setValueOfTheObject(stats, "impressions", 0);
+    // добавляем клики
+    temp[4] = setValueOfTheObject(stats, "clicks", 0);
+    // добавляем ctr
+    temp[5] = setValueOfTheObject(stats, "ctr", "");
+    // добавляем ecpc
+    temp[6] = setValueOfTheObject(stats, "ecpc", "");
+    // добавляем ecpm
+    temp[7] = setValueOfTheObject(stats, "ecpm", "");
+    // добавляем ID объявления
+    temp[8] = setValueOfTheObject(response[counter], "id", 0);
 
     // добавляем дата и время создания объявления
-    result[counter][9] = "";
+    temp[9] = "";
     // добавляем кабинет клиента
-    result[counter][10] = "";
+    temp[10] = "";
     // добавляем ID компании
-    result[counter][11] = "";
+    temp[11] = "";
+    result.push(temp);
   }
   return result;
 }
