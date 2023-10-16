@@ -12,19 +12,22 @@ function doPost(e){
     var Col = e.parameter.Col; //Записали номер столбца
     var Row = e.parameter.Row; //Записали номер строки
 
-    var jsonString = e.parameter.Str.replace(/'/g, '"'); // Конвертируем строку в валидный JSON объект
-    var Arr = parseResponseTo2DArray(jsonString); // Парсим JSON объект в двумерный массив
+    //var jsonString = e.parameter.Str.replace(/'/g, '"'); // Конвертируем строку в валидный JSON объект
+    var Arr = parseResponseTo2DArray(JSON.parse(e.parameter.Str)); // Парсим JSON объект в двумерный массив
 
     //Открываем таблицу и записываем в неё данные
     var SS = SpreadsheetApp.openById(SpreadsheetID); //Открываем таблицу по ID
     var ST = SS.setActiveSheet(SS.getSheetByName(SheetName)); //Вызываем лист по названию из таблицы, которая в переменной Spreadsheet
-    var RowIndex = Row; //Получили номер новой строки, которая будет после последней заполненной
+    var RowIndex = ST.getLastRow() + 1;//Получили номер новой строки, которая будет после последней заполненной
+    var cols = Arr.length;
+    var rows = Arr[0].length;
     ST.getRange(RowIndex, Col, Arr.length, Arr[0].length).setValues(Arr) // Вставляем двумерный массив
 
     //Формируем объект-отчёт
     report["runtime"] = (Date.now() - startDT)/1000; //Расчитали время выполнения Гугл-скрипта в секундах
     report["success"] = "1";
     report["rowline"] = RowIndex;
+    report["arr"] = JSON.stringify(Arr);
 
     //Завершаем работу скрипта и отправляем ответ
     SpreadsheetApp.flush();
@@ -47,14 +50,12 @@ function parseResponseTo2DArray(responseObject) {
       continue;
     // здесь определяем сколько будет параметров в массиве и их значения по умолчанию
     var temp = new Array("", "", "", 0, 0, "", "", "", 0, "", "", ""); 
-
-    // добавляем дату
-    temp[0] = Utilities.formatDate(new Date(), "GMT+3", "dd.MM.yyyy");
-    // добавляем название
-    temp[1] = "";
-
     var stats = response[counter].stats[0];
     
+    // добавляем дату
+    temp[0] = getValueOfTheObject(stats, "day", "");;
+    // добавляем название
+    temp[1] = ""; 
     // добавляем потрачено    
     temp[2] = getValueOfTheObject(stats, "spent", "");
     // добавялем показы
