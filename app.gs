@@ -56,19 +56,19 @@ function parseResponseTo2DArray(responseObject) {
     var stats = response[counter].stats[0];
     
     // добавляем потрачено    
-    temp[2] = setValueOfTheObject(stats, "spent", "");
+    temp[2] = getValueOfTheObject(stats, "spent", "");
     // добавялем показы
-    temp[3] = setValueOfTheObject(stats, "impressions", 0);
+    temp[3] = getValueOfTheObject(stats, "impressions", 0);
     // добавляем клики
-    temp[4] = setValueOfTheObject(stats, "clicks", 0);
+    temp[4] = getValueOfTheObject(stats, "clicks", 0);
     // добавляем ctr
-    temp[5] = setValueOfTheObject(stats, "ctr", "");
+    temp[5] = getValueOfTheObject(stats, "ctr", "");
     // добавляем ecpc
-    temp[6] = setValueOfTheObject(stats, "ecpc", "");
+    temp[6] = getValueOfTheObject(stats, "ecpc", "");
     // добавляем ecpm
-    temp[7] = setValueOfTheObject(stats, "ecpm", "");
+    temp[7] = getValueOfTheObject(stats, "ecpm", "");
     // добавляем ID объявления
-    temp[8] = setValueOfTheObject(response[counter], "id", 0);
+    temp[8] = getValueOfTheObject(response[counter], "id", 0);
 
     // добавляем дата и время создания объявления
     temp[9] = "";
